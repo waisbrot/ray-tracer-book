@@ -1,0 +1,9 @@
+{
+    "cSpell.words": [
+        "powi",
+        "proptest"
+    ],
+    "rust-analyzer.linkedProjects": [
+        "./Cargo.toml"
+    ]
+}

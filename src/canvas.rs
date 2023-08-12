@@ -1,4 +1,4 @@
-use std::{error::Error, path::Path, fs::File, io::{LineWriter, Write, BufWriter}};
+use std::{error::Error, path::Path, fs::File, io::{Write, BufWriter}};
 
 use crate::color::{Color, BLACK};
 use array2d::Array2D;
@@ -17,6 +17,10 @@ impl Canvas {
         Canvas { width, height, pixels: pixels }
     }
 
+    fn scale_and_clamp_255(number: f32) -> u8 {
+        (number * 255.0).clamp(0.0, 255.0).round() as u8
+    }
+
     pub fn ppm_data(&self) -> Vec<String> {
         let mut v: Vec<String> = Vec::new();
         v.push(String::from("P3"));
@@ -25,10 +29,16 @@ impl Canvas {
         for y in 0..self.height {
             let strings:Vec<String> = self.pixels.row_iter(y)
                 .unwrap()
-                .map(|c| { format!("{} {} {}", (c.red * 255.0) as i32, (c.green * 255.0) as i32, (c.blue * 255.0) as i32) })
+                .map(|c| { 
+                    let red = Self::scale_and_clamp_255(c.red);
+                    let green = Self::scale_and_clamp_255(c.green);
+                    let blue = Self::scale_and_clamp_255(c.blue);
+                    format!("{} {} {}", red, green, blue) 
+                })
                 .collect();
             v.push(strings.join(" "));
         }
+        v.push(String::from("\n"));
         return v;
     }
 
@@ -36,8 +46,8 @@ impl Canvas {
         let fh = File::create(path)?;
         let mut file = BufWriter::new(fh);
         for line in self.ppm_data() {
-            file.write_all(line.as_bytes());
-            file.write_all(b"\n");
+            file.write_all(line.as_bytes())?;
+            file.write_all(b"\n")?;
         }
         Ok(())
     }
@@ -53,7 +63,9 @@ impl Canvas {
         let data:Vec<u8> = self.pixels
             .as_row_major()
             .iter()
-            .flat_map(|c| { [(c.red * 255.0) as u8, (c.green * 255.0) as u8, (c.blue * 255.0) as u8, 255] })
+            .flat_map(|c| { 
+                [Self::scale_and_clamp_255(c.red), Self::scale_and_clamp_255(c.green), Self::scale_and_clamp_255(c.blue), 255 as u8]
+            })
             .collect();
         writer.write_image_data(&data)?;
         Ok(())

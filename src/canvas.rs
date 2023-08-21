@@ -1,4 +1,4 @@
-use std::{error::Error, path::Path, fs::File, io::{Write, BufWriter}};
+use std::{error::Error, path::Path, fs::File, io::{Write, BufWriter}, ops::{Index, IndexMut}};
 
 use crate::color::{Color, BLACK};
 use array2d::Array2D;
@@ -69,5 +69,18 @@ impl Canvas {
             .collect();
         writer.write_image_data(&data)?;
         Ok(())
+    }
+}
+
+impl Index<(usize,usize)> for Canvas {
+    type Output=Color;
+
+    fn index(&self, index: (usize,usize)) -> &Self::Output {
+        &self.pixels[(index.1, index.0)]
+    }
+}
+impl IndexMut<(usize,usize)> for Canvas {
+    fn index_mut(&mut self, index: (usize,usize)) -> &mut Color {
+        &mut self.pixels[(index.1, index.0)]
     }
 }

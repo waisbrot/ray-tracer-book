@@ -1,5 +1,6 @@
 use auto_ops::*;
 use std::{error::Error, fmt::Display, num::ParseFloatError};
+use crate::util::feq;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Tuple {
@@ -85,12 +86,8 @@ impl Tuple {
     }
 }
 
-pub fn feq(a: f32, b: f32) -> bool {
-    (a - b).abs() < 0.00001
-}
-
 impl_op_ex!(+ |a: &Tuple, b: &Tuple| -> Tuple { Tuple{x: a.x + b.x, y: a.y + b.y, z: a.z + b.z, w: a.w + b.w} });
-impl_op_ex!(-|a: &Tuple, b: &Tuple| -> Tuple {
+impl_op_ex!(- |a: &Tuple, b: &Tuple| -> Tuple {
     Tuple {
         x: a.x - b.x,
         y: a.y - b.y,
@@ -98,7 +95,7 @@ impl_op_ex!(-|a: &Tuple, b: &Tuple| -> Tuple {
         w: a.w - b.w,
     }
 });
-impl_op_ex!(*|a: &Tuple, b: &f32| -> Tuple {
+impl_op_ex!(* |a: &Tuple, b: &f32| -> Tuple {
     Tuple {
         x: a.x * b,
         y: a.y * b,
@@ -107,7 +104,7 @@ impl_op_ex!(*|a: &Tuple, b: &f32| -> Tuple {
     }
 });
 impl_op_ex!(/ |a: &Tuple, b: &f32| -> Tuple { Tuple{x: a.x / b, y: a.y / b, z: a.z / b, w:a.w / b} });
-impl_op_ex!(-|a: &Tuple| -> Tuple {
+impl_op_ex!(- |a: &Tuple| -> Tuple {
     Tuple {
         x: -a.x,
         y: -a.y,
@@ -117,7 +114,7 @@ impl_op_ex!(-|a: &Tuple| -> Tuple {
 });
 impl PartialEq for Tuple {
     fn eq(&self, other: &Self) -> bool {
-        feq(self.x, other.x) && feq(self.y, other.y) && feq(self.z, other.z) && feq(self.w, other.w)
+        feq(&self.x, &other.x) && feq(&self.y, &other.y) && feq(&self.z, &other.z) && feq(&self.w, &other.w)
     }
 }
 

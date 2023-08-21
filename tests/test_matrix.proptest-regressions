@@ -1,0 +1,9 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 1ab226d413631e3828645a0c8a2f2c801082929f859e1a67f7e8f332fa869a89 # shrinks to values1 = [[0.0, -0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]], values2 = [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 9.4368326e24], [0.0, -8.672059e21, 0.0, 0.0]]
+cc 9a19e8fdbbcaa939bc2ced4dcfd67c2eace697d33a56a562145ad6f111a49323 # shrinks to a = Matrix { n: Array2D { array: [-0.0, 0.0, NaN, -0.0], num_rows: 2, num_columns: 2 } }, b = Matrix { n: Array2D { array: [3.3517067e37, 0.0, 0.0, 4.1436713e34], num_rows: 2, num_columns: 2 } }
+cc ca9b4dd7c0b30bed61f6f68a0cc4809365880f77cd4f7e6c708b33ae3dcf8d1d # shrinks to a = Matrix { n: Array2D { array: [5.273883e-14, 6.1216546e24, -1.4203425e-13, 5.2983103e33], num_rows: 2, num_columns: 2 } }, b = Matrix { n: Array2D { array: [7.7981716e-10, 27468758.0, 0.750836, -5.8923117e-8], num_rows: 2, num_columns: 2 } }

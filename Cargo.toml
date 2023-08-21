@@ -17,5 +17,8 @@ array2d = "0.3.0"
 auto_ops = "0.3.0"
 clap = { version = "4.3.21", features = ["derive"] }
 crossterm = "0.27.0"
+log = "0.4.20"
 png = "0.17.9"
 ratatui = { version = "0.22.0", features = ["all-widgets"] }
+regex = "1.9.3"
+structured-logger = "1.0.3"

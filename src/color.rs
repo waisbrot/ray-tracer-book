@@ -1,6 +1,6 @@
 use auto_ops::*;
 
-use crate::tuple::feq;
+use crate::util::feq;
 
 #[derive(Debug,Clone,Copy)]
 pub struct Color {
@@ -22,6 +22,6 @@ impl_op_ex!(- |a: &Color, b: &Color| -> Color { Color::new(a.red - b.red, a.gree
 impl_op_ex!(* |a: &Color, b: &Color| -> Color { Color::new(a.red * b.red, a.green * b.green, a.blue * b.blue)});
 impl PartialEq for Color {
     fn eq(&self, other: &Self) -> bool {
-        feq(self.red, other.red) && feq(self.green, other.green) && feq(self.blue, other.blue)
+        feq(&self.red, &other.red) && feq(&self.green, &other.green) && feq(&self.blue, &other.blue)
     }
 }

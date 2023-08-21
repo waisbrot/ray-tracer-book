@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use book_renderer::tuple::*;
+use book_renderer::{tuple::*, util::feq};
 use proptest::prelude::*;
 
 #[test]
@@ -130,14 +130,6 @@ fn test_cross_product_point_failure() {
 }
 
 #[test]
-fn test_feq() {
-    assert!(feq(0., 0.));
-    assert!(feq(0., 5.0e-10));
-    assert!(feq(1., 1.00000001));
-    assert!(!feq(1., 1.001));
-}
-
-#[test]
 fn test_eq_neq_small_numbers() {
     assert_eq!(new_vector(0., 0., 0.), new_vector(0., -5.2844766e-36, 0.));
     assert_ne!(new_vector(0., 0., 0.), new_vector(0., -5.2844766e36, 0.));
@@ -168,7 +160,7 @@ proptest! {
         let v = new_vector(x, y, z);
         prop_assume!(v != new_vector(0.,0.,0.));
         match v.normalize() {
-            Ok(nv) => prop_assert!(feq(nv.magnitude()?, 1.), "nv={:?}", nv),
+            Ok(nv) => prop_assert!(feq(&nv.magnitude()?, &1.0), "nv={:?}", nv),
             Err(_) => prop_assert!(true),
         }
     }

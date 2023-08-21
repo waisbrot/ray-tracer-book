@@ -10,7 +10,7 @@ fn book_test_canvas_new() {
     assert_eq!(c.height, 20);
     for x in 0..c.width {
         for y in 0..c.height {
-            assert_eq!(c.pixels[(y,x)], Color::new(0.0, 0.0, 0.0));
+            assert_eq!(c[(x,y)], Color::new(0.0, 0.0, 0.0));
         }
     }
 }
@@ -20,7 +20,7 @@ fn book_test_write_pixel() {
     let mut c = Canvas::new(10, 20);
     let red = Color::new(1.0, 0.0, 0.0);
     c.pixels[(3,2)] = red.clone();
-    assert_eq!(c.pixels[(3,2)], red);
+    assert_eq!(c[(2,3)], red);
 }
 
 #[test]
@@ -35,9 +35,9 @@ fn book_test_ppm_header() {
 #[test]
 fn book_test_ppm_data() {
     let mut c = Canvas::new(5, 3);
-    c.pixels[(0,0)] = Color::new(1.5, 0.0, 0.0);
-    c.pixels[(1,2)] = Color::new(0.0, 0.5, 0.0);
-    c.pixels[(2,4)] = Color::new(-0.5, 0.0, 1.0);
+    c[(0,0)] = Color::new(1.5, 0.0, 0.0);
+    c[(2,1)] = Color::new(0.0, 0.5, 0.0);
+    c[(4,2)] = Color::new(-0.5, 0.0, 1.0);
     let data = c.ppm_data();
     assert_eq!(data[3], "255 0 0 0 0 0 0 0 0 0 0 0 0 0 0");
     assert_eq!(data[4], "0 0 0 0 0 0 0 128 0 0 0 0 0 0 0");
@@ -50,7 +50,7 @@ fn book_test_ppm_long_lines() {
     let mut c = Canvas::new(10, 2);
     for x in 0..c.width {
         for y in 0..c.height {
-            c.pixels[(y, x)] = Color::new(1.0, 0.8, 0.6);
+            c[(x, y)] = Color::new(1.0, 0.8, 0.6);
         }
     }
     let data = c.ppm_data();

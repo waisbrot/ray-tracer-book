@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use book_renderer::{tuple::*, util::feq};
+use book_renderer::{tuple::*, util::{feq, Float}};
 use proptest::prelude::*;
 
 #[test]
@@ -93,8 +93,8 @@ fn test_book_magnitude() -> Result<(), Box<dyn Error>> {
     assert_eq!(new_vector(1., 0., 0.).magnitude()?, 1.);
     assert_eq!(new_vector(0., 1., 0.).magnitude()?, 1.);
     assert_eq!(new_vector(0., 0., 1.).magnitude()?, 1.);
-    assert_eq!(new_vector(1., 2., 3.).magnitude()?, f32::sqrt(14.));
-    assert_eq!(new_vector(-1., -2., -3.).magnitude()?, f32::sqrt(14.));
+    assert_eq!(new_vector(1., 2., 3.).magnitude()?, Float::sqrt(14.));
+    assert_eq!(new_vector(-1., -2., -3.).magnitude()?, Float::sqrt(14.));
     Ok(())
 }
 
@@ -144,19 +144,19 @@ fn test_regression_large_number_normalize() {
 
 proptest! {
     #[test]
-    fn create_point(x: f32, y: f32, z: f32) {
+    fn create_point(x: Float, y: Float, z: Float) {
         let t = new_point(x,y,z);
         prop_assert!(t.is_point());
     }
 
     #[test]
-    fn create_vector(x: f32, y: f32, z: f32) {
+    fn create_vector(x: Float, y: Float, z: Float) {
         let t = new_vector(x,y,z);
         prop_assert!(t.is_vector());
     }
 
     #[test]
-    fn normalized_vectors_are_magnitude_1(x: f32, y: f32, z: f32) {
+    fn normalized_vectors_are_magnitude_1(x: Float, y: Float, z: Float) {
         let v = new_vector(x, y, z);
         prop_assume!(v != new_vector(0.,0.,0.));
         match v.normalize() {

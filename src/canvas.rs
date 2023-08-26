@@ -1,6 +1,6 @@
 use std::{error::Error, path::Path, fs::File, io::{Write, BufWriter}, ops::{Index, IndexMut}};
 
-use crate::color::{Color, BLACK};
+use crate::{color::{Color, BLACK}, util::Float};
 use array2d::Array2D;
 use png;
 
@@ -17,7 +17,7 @@ impl Canvas {
         Canvas { width, height, pixels: pixels }
     }
 
-    fn scale_and_clamp_255(number: f32) -> u8 {
+    fn scale_and_clamp_255(number: Float) -> u8 {
         (number * 255.0).clamp(0.0, 255.0).round() as u8
     }
 

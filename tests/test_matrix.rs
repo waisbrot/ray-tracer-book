@@ -1,5 +1,5 @@
 use std::error::Error;
-use proptest::{prelude::*, num::f32::{POSITIVE, NEGATIVE}};
+use proptest::{prelude::*, num::f64::{POSITIVE, NEGATIVE,NORMAL}};
 use book_renderer::{matrix::Matrix, tuple::{Tuple, new_point}};
 
 #[test]
@@ -367,7 +367,7 @@ fn test_book_inverse_mult_property() -> Result<(), Box<dyn Error>> {
 }
 
 prop_compose! {
-    fn matrix_strategy(n: usize)(values in [[proptest::num::f32::NORMAL|POSITIVE|NEGATIVE;4];4]) -> Matrix {
+    fn matrix_strategy(n: usize)(values in [[NORMAL|POSITIVE|NEGATIVE;4];4]) -> Matrix {
         if n > 4 {
             panic!("Can't make more than a 4x4 matrix");
         }
@@ -375,6 +375,20 @@ prop_compose! {
         for r in 0..n {
             for c in 0..n {
                 m[(r,c)] = values[r][c];
+            }
+        }
+        m
+    }
+}
+prop_compose! {
+    fn finite_matrix_strategy(n: usize)(values in [[NORMAL|POSITIVE|NEGATIVE;4];4]) -> Matrix {
+        if n > 4 {
+            panic!("Can't make more than a 4x4 matrix");
+        }
+        let mut m = Matrix::new(n, n);
+        for r in 0..n {
+            for c in 0..n {
+                m[(r,c)] = values[r][c].clamp(-1e5, 1e5);
             }
         }
         m
@@ -389,8 +403,22 @@ proptest! {
     }
 
     #[test]
-    fn inverse_multiplier(a in matrix_strategy(2), b in matrix_strategy(2).prop_filter("B must be invertable", |m| m.is_invertible())) {
+    fn inverse_multiplier(a in finite_matrix_strategy(2), b in finite_matrix_strategy(2).prop_filter("B must be invertable", |m| m.is_invertible())) {
+        for row in 0..2 {
+            for col in 0..2 {
+                let submatrix = b.submatrix(row, col);
+                let bri = if row == 0 {1} else {0};
+                let bci = if col == 0 {1} else {0};
+                prop_assert!(submatrix[(0,0)] == b[(bri,bci)]);
+                prop_assert_eq!(submatrix.height(), 1);
+                prop_assert_eq!(submatrix.width(), 1);
+                let cofactor = b.cofactor(row, col);
+                prop_assert!(cofactor > 0.0 || cofactor < 0.0);
+                prop_assert!(cofactor.is_finite());
+            }
+        }
         let c = &a * &b;
+        prop_assume!(c.is_invertible());
         let inv = b.inverse()?;
         let d = &c * &inv;
         prop_assume!(!d.contains_nan());

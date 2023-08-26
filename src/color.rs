@@ -1,16 +1,16 @@
 use auto_ops::*;
 
-use crate::util::feq;
+use crate::util::{feq, Float};
 
 #[derive(Debug,Clone,Copy)]
 pub struct Color {
-    pub red: f32,
-    pub green: f32,
-    pub blue: f32,
+    pub red: Float,
+    pub green: Float,
+    pub blue: Float,
 }
 
 impl Color {
-    pub fn new(red: f32, green: f32, blue: f32) -> Color {
+    pub fn new(red: Float, green: Float, blue: Float) -> Color {
         Color{red, green, blue}
     }
 }

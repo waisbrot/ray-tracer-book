@@ -2,7 +2,7 @@ use std::{ops::{IndexMut, Index}, error::Error, num::ParseFloatError};
 use auto_ops::impl_op_ex;
 use regex::Regex;
 use array2d::Array2D;
-use crate::{tuple::Tuple, util::feq};
+use crate::{tuple::Tuple, util::{feq, Float}};
 
 #[derive(Debug)]
 pub struct NotInvertibleError {}
@@ -25,7 +25,7 @@ impl std::fmt::Display for MatrixParseError {
 
 #[derive(Debug)]
 pub struct Matrix {
-    n: Array2D<f32>,
+    n: Array2D<Float>,
 }
 
 impl Matrix {
@@ -37,7 +37,7 @@ impl Matrix {
         let mut array = Array2D::filled_with(0.0,height,width);
         for (r,line) in contents.split('\n').map(|l| l.trim()).filter(|l| ! l.is_empty()).enumerate() {
             for (c,n) in re.split(line).map(|w| w.trim()).filter(|w| ! w.is_empty()).enumerate() {
-                array[(r,c)] = n.trim().parse::<f32>().or_else(|e| Err(MatrixParseError{token: n.to_string(), err: e}))?;
+                array[(r,c)] = n.trim().parse::<Float>().or_else(|e| Err(MatrixParseError{token: n.to_string(), err: e}))?;
             }
         }
         Ok(Matrix{n:array})
@@ -71,13 +71,15 @@ impl Matrix {
         m
     }
 
-    pub fn determinant(&self) -> f32 {
+    pub fn determinant(&self) -> Float {
         self.assert_square();
         match self.n.num_columns() {
+            1 =>
+                self[(0,0)],
             2 => 
                 self[(0,0)] * self[(1,1)] - self[(0,1)] * self[(1,0)],
             n => {
-                let mut d:f32 = 0.0; 
+                let mut d:Float = 0.0; 
                 for c in 0..n {
                     d += self[(0,c)] * self.cofactor(0, c);
                 }
@@ -99,7 +101,8 @@ impl Matrix {
     }
 
     pub fn is_invertible(&self) -> bool {
-        self.determinant() != 0.0
+        let det = self.determinant();
+        det != 0.0 && det.is_finite()
     }
 
     pub fn inverse(&self) -> Result<Matrix, NotInvertibleError> {
@@ -139,26 +142,26 @@ impl Matrix {
         m
     }
 
-    pub fn minor(&self, r: usize, c: usize) -> f32 {
+    pub fn minor(&self, r: usize, c: usize) -> Float {
         self.assert_square();
         self.submatrix(r, c).determinant()
     }
 
-    pub fn cofactor(&self, r: usize, c: usize) -> f32 {
-        let sign: f32 = if (r + c) % 2 == 0 { 1.0 } else { -1.0 };
+    pub fn cofactor(&self, r: usize, c: usize) -> Float {
+        let sign: Float = if (r + c) % 2 == 0 { 1.0 } else { -1.0 };
         self.minor(r, c) * sign
     }
 }
 
 impl Index<(usize,usize)> for Matrix{
-    type Output=f32;
+    type Output=Float;
 
     fn index(&self, index: (usize,usize)) -> &Self::Output {
         &self.n[index]
     }
 }
 impl IndexMut<(usize,usize)> for Matrix {
-    fn index_mut(&mut self, index: (usize,usize)) -> &mut f32 {
+    fn index_mut(&mut self, index: (usize,usize)) -> &mut Float {
     &mut self.n[index]
     }
 }
@@ -198,7 +201,7 @@ impl_op_ex!(* |a: &Matrix, b: &Tuple| -> Tuple {
     if a.height() != 4 {
         panic!("Expected 4 rows in the matrix to multiply by the tuple but found {}", a.height());
     }
-    let sum_row = |r:usize| -> f32 {
+    let sum_row = |r:usize| -> Float {
         a.n.row_iter(r).unwrap()
             .zip(&[b.x, b.y, b.z, b.w])
             .map(|(ar,bc)| {ar * bc})

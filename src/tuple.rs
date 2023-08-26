@@ -1,13 +1,13 @@
 use auto_ops::*;
 use std::{error::Error, fmt::Display, num::ParseFloatError};
-use crate::util::feq;
+use crate::util::{feq, Float};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Tuple {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
-    pub w: f32,
+    pub x: Float,
+    pub y: Float,
+    pub z: Float,
+    pub w: Float,
 }
 
 impl Display for Tuple {
@@ -25,22 +25,22 @@ impl From<&Tuple> for String {
 pub type Vector = Tuple;
 pub type Point = Tuple;
 
-pub fn new_point(x: f32, y: f32, z: f32) -> Point {
+pub fn new_point(x: Float, y: Float, z: Float) -> Point {
     Tuple { x, y, z, w: 1.0 }
 }
 
 pub fn parse_point(s: &str) -> Result<Point, ParseFloatError> {
     let pieces:Vec<&str> = s.split(',').collect();
-    Ok(new_point(pieces[0].parse::<f32>()?, pieces[1].parse::<f32>()?, pieces[2].parse::<f32>()?))
+    Ok(new_point(pieces[0].parse::<Float>()?, pieces[1].parse::<Float>()?, pieces[2].parse::<Float>()?))
 }
 
-pub fn new_vector(x: f32, y: f32, z: f32) -> Vector {
+pub fn new_vector(x: Float, y: Float, z: Float) -> Vector {
     Tuple { x, y, z, w: 0.0 }
 }
 
 pub fn parse_vector(s: &str) -> Result<Vector, ParseFloatError> {
     let pieces:Vec<&str> = s.split(',').collect();
-    Ok(new_vector(pieces[0].parse::<f32>()?, pieces[1].parse::<f32>()?, pieces[2].parse::<f32>()?))
+    Ok(new_vector(pieces[0].parse::<Float>()?, pieces[1].parse::<Float>()?, pieces[2].parse::<Float>()?))
 }
 
 impl Tuple {
@@ -52,7 +52,7 @@ impl Tuple {
         self.w == 0.0
     }
 
-    pub fn magnitude(&self) -> Result<f32, FloatingPointFiniteError> {
+    pub fn magnitude(&self) -> Result<Float, FloatingPointFiniteError> {
         let x = self.x.powi(2);
         let y = self.y.powi(2);
         let z = self.z.powi(2);
@@ -68,7 +68,7 @@ impl Tuple {
         Ok(self / self.magnitude()?)
     }
 
-    pub fn dot(&self, other: &Tuple) -> f32 {
+    pub fn dot(&self, other: &Tuple) -> Float {
         self.x * other.x + self.y * other.y + self.z * other.z + self.w * other.w
     }
 
@@ -95,7 +95,7 @@ impl_op_ex!(- |a: &Tuple, b: &Tuple| -> Tuple {
         w: a.w - b.w,
     }
 });
-impl_op_ex!(* |a: &Tuple, b: &f32| -> Tuple {
+impl_op_ex!(* |a: &Tuple, b: &Float| -> Tuple {
     Tuple {
         x: a.x * b,
         y: a.y * b,
@@ -103,7 +103,7 @@ impl_op_ex!(* |a: &Tuple, b: &f32| -> Tuple {
         w: a.w * b,
     }
 });
-impl_op_ex!(/ |a: &Tuple, b: &f32| -> Tuple { Tuple{x: a.x / b, y: a.y / b, z: a.z / b, w:a.w / b} });
+impl_op_ex!(/ |a: &Tuple, b: &Float| -> Tuple { Tuple{x: a.x / b, y: a.y / b, z: a.z / b, w:a.w / b} });
 impl_op_ex!(- |a: &Tuple| -> Tuple {
     Tuple {
         x: -a.x,

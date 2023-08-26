@@ -1,6 +1,6 @@
 use std::error::Error;
 use proptest::{prelude::*, num::f64::{POSITIVE, NEGATIVE,NORMAL}};
-use book_renderer::{matrix::Matrix, tuple::{Tuple, new_point}};
+use book_renderer::{matrix::Matrix, tuple::Tuple};
 
 #[test]
 fn test_book_from_str_matrix_4_4() -> Result<(), Box<dyn Error>> {
@@ -113,8 +113,8 @@ fn test_book_matrix_tuple_mult() -> Result<(), Box<dyn Error>> {
     8 | 6 | 4 | 1
     0 | 0 | 0 | 1
     ")?;
-    let t = new_point(1.0, 2.0, 3.0);
-    let res = new_point(18.0, 24.0, 33.0);
+    let t = Tuple::new_point(1.0, 2.0, 3.0);
+    let res = Tuple::new_point(18.0, 24.0, 33.0);
     assert_eq!(m * t, res);
     Ok(())
 }

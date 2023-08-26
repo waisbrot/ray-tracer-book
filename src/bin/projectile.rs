@@ -1,6 +1,6 @@
 use std::{error::Error, io::{Stdout, self}, time::Duration, thread, fmt::Debug};
 
-use book_renderer::{tuple::{parse_vector, parse_point, Vector, Point}, canvas::Canvas, color};
+use book_renderer::{tuple::{Vector, Point}, canvas::Canvas, color};
 use clap::Parser;
 use ratatui::{prelude::*, Terminal, widgets::{Table, Row, Block, Borders}};
 use crossterm::{terminal::{enable_raw_mode, EnterAlternateScreen, disable_raw_mode, LeaveAlternateScreen},execute};
@@ -38,16 +38,16 @@ fn tick(projectile: &Projectile, environment: &Environment) -> Projectile {
 
 #[derive(Debug, Parser)]
 struct Args {
-    #[arg(long, default_value = "0,0,0", value_parser = parse_point)]
+    #[arg(long, default_value = "0,0,0", value_parser = Point::parse_point)]
     position: Point,
 
-    #[arg(long, default_value = "0,0,0", value_parser = parse_vector)]
+    #[arg(long, default_value = "0,0,0", value_parser = Vector::parse_vector)]
     velocity: Vector,
 
-    #[arg(long, default_value = "0,-9.8,0", value_parser = parse_vector)]
+    #[arg(long, default_value = "0,-9.8,0", value_parser = Vector::parse_vector)]
     gravity: Vector,
 
-    #[arg(long, default_value = "0,0,0", value_parser = parse_vector)]
+    #[arg(long, default_value = "0,0,0", value_parser = Vector::parse_vector)]
     wind: Vector,
 
     #[arg(long, default_value = "1000")]

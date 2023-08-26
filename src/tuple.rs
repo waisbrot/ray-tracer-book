@@ -25,25 +25,25 @@ impl From<&Tuple> for String {
 pub type Vector = Tuple;
 pub type Point = Tuple;
 
-pub fn new_point(x: Float, y: Float, z: Float) -> Point {
-    Tuple { x, y, z, w: 1.0 }
-}
-
-pub fn parse_point(s: &str) -> Result<Point, ParseFloatError> {
-    let pieces:Vec<&str> = s.split(',').collect();
-    Ok(new_point(pieces[0].parse::<Float>()?, pieces[1].parse::<Float>()?, pieces[2].parse::<Float>()?))
-}
-
-pub fn new_vector(x: Float, y: Float, z: Float) -> Vector {
-    Tuple { x, y, z, w: 0.0 }
-}
-
-pub fn parse_vector(s: &str) -> Result<Vector, ParseFloatError> {
-    let pieces:Vec<&str> = s.split(',').collect();
-    Ok(new_vector(pieces[0].parse::<Float>()?, pieces[1].parse::<Float>()?, pieces[2].parse::<Float>()?))
-}
-
 impl Tuple {
+    pub fn new_point(x: Float, y: Float, z: Float) -> Point {
+        Tuple { x, y, z, w: 1.0 }
+    }
+
+    pub fn parse_point(s: &str) -> Result<Point, ParseFloatError> {
+        let pieces:Vec<&str> = s.split(',').collect();
+        Ok(Self::new_point(pieces[0].parse::<Float>()?, pieces[1].parse::<Float>()?, pieces[2].parse::<Float>()?))
+    }
+
+    pub fn new_vector(x: Float, y: Float, z: Float) -> Vector {
+        Tuple { x, y, z, w: 0.0 }
+    }
+
+    pub fn parse_vector(s: &str) -> Result<Vector, ParseFloatError> {
+        let pieces:Vec<&str> = s.split(',').collect();
+        Ok(Self::new_vector(pieces[0].parse::<Float>()?, pieces[1].parse::<Float>()?, pieces[2].parse::<Float>()?))
+    }
+
     pub fn is_point(&self) -> bool {
         self.w == 1.0
     }
@@ -77,7 +77,7 @@ impl Tuple {
             (true, false) => Err(NotVector::new(other)),
             (false, true) => Err(NotVector::new(self)),
             (false, false) => Err(NotVector::new(self)),
-            (true, true) => Ok(new_vector(
+            (true, true) => Ok(Self::new_vector(
                 self.y * other.z - self.z * other.y,
                 self.z * other.x - self.x * other.z,
                 self.x * other.y - self.y * other.x,

@@ -42,13 +42,62 @@ impl Matrix {
         }
         Ok(Matrix{n:array})
     }
-    pub fn identity(size: usize) -> Matrix {
-        let mut m = Matrix::new(size, size);
+    pub fn identity(size: usize) -> Self {
+        let mut m = Self::new(size, size);
         for i in 0..size {
             m[(i,i)] = 1.0;
         }
         m
     }
+    pub fn translation(x: Float, y: Float, z: Float) -> Self {
+        let mut m = Self::identity(4);
+        m[(0,3)] = x;
+        m[(1,3)] = y;
+        m[(2,3)] = z;
+        m
+    }
+    pub fn scaling(x: Float, y: Float, z: Float) -> Self {
+        let mut m = Self::identity(4);
+        m[(0,0)] = x;
+        m[(1,1)] = y;
+        m[(2,2)] = z;
+        m
+    }
+    pub fn rotation_x(radians: Float) -> Self {
+        let mut m = Self::identity(4);
+        m[(1,1)] = radians.cos();
+        m[(2,1)] = radians.sin();
+        m[(1,2)] = -m[(2,1)];
+        m[(2,2)] = m[(1,1)];
+        m
+    }
+    pub fn rotation_y(radians: Float) -> Self {
+        let mut m = Self::identity(4);
+        m[(0,0)] = radians.cos();
+        m[(0,2)] = radians.sin();
+        m[(2,0)] = -m[(0,2)];
+        m[(2,2)] = m[(0,0)];
+        m
+    }
+    pub fn rotation_z(radians: Float) -> Self {
+        let mut m = Self::identity(4);
+        m[(0,0)] = radians.cos();
+        m[(1,0)] = radians.sin();
+        m[(0,1)] = -m[(1,0)];
+        m[(1,1)] = m[(0,0)];
+        m
+    }
+    pub fn shear(xy: Float, xz: Float, yx: Float, yz: Float, zx: Float, zy: Float) -> Self {
+        let mut m = Self::identity(4);
+        m[(0,1)] = xy;
+        m[(0,2)] = xz;
+        m[(1,0)] = yx;
+        m[(1,2)] = yz;
+        m[(2,0)] = zx;
+        m[(2,1)] = zy;
+        m
+    }
+
 
     pub fn is_square(&self) -> bool {
         self.height() == self.width()

@@ -3,3 +3,7 @@ pub mod tuple;
 pub mod color;
 pub mod canvas;
 pub mod matrix;
+pub mod ray;
+pub mod sphere;
+pub mod light;
+pub mod material;

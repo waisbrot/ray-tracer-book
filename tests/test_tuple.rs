@@ -165,3 +165,21 @@ proptest! {
         }
     }
 }
+
+#[test]
+fn test_book_reflect_vector_45() -> Result<(), Box<dyn Error>> {
+    let v = Tuple::new_vector(1.0, -1.0, 0.0);
+    let n = Tuple::new_vector(0.0, 1.0, 0.0);
+    let r = v.reflect(&n)?;
+    assert_eq!(r, Tuple::new_vector(1.0, 1.0, 0.0));
+    Ok(())
+}
+
+#[test]
+fn test_book_reflect_vector_slant() -> Result<(), Box<dyn Error>> {
+    let v = Tuple::new_vector(0.0, -1.0, 0.0);
+    let n = Tuple::new_vector(2.0_f64.sqrt()/2.0, 2.0_f64.sqrt()/2.0, 0.0);
+    let r = v.reflect(&n)?;
+    assert_eq!(r, Tuple::new_vector(1.0, 0.0, 0.0));
+    Ok(())
+}

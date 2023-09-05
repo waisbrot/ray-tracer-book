@@ -2,7 +2,7 @@ use auto_ops::*;
 use std::{error::Error, fmt::Display, num::ParseFloatError};
 use crate::util::{feq, Float};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialOrd)]
 pub struct Tuple {
     pub x: Float,
     pub y: Float,
@@ -28,6 +28,10 @@ pub type Point = Tuple;
 impl Tuple {
     pub fn new_point(x: Float, y: Float, z: Float) -> Point {
         Tuple { x, y, z, w: 1.0 }
+    }
+
+    pub fn origin_point() -> Point {
+        Self::new_point(0.0, 0.0, 0.0)
     }
 
     pub fn parse_point(s: &str) -> Result<Point, ParseFloatError> {
@@ -82,6 +86,16 @@ impl Tuple {
                 self.z * other.x - self.x * other.z,
                 self.x * other.y - self.y * other.x,
             )),
+        }
+    }
+
+    pub fn reflect(&self, normal: &Tuple) -> Result<Tuple, NotVector> {
+        match (self.is_vector(), normal.is_vector()) {
+            (true, false) => Err(NotVector::new(normal)),
+            (false, true) => Err(NotVector::new(self)),
+            (false, false) => Err(NotVector::new(self)),
+            (true, true) => 
+                Ok(self - normal * 2.0 * self.dot(normal))
         }
     }
 }

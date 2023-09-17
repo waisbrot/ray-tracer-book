@@ -1,6 +1,6 @@
 use crate::{color::{Color, BLACK}, util::Float, light::Light, tuple::{Point, Vector}};
 
-#[derive(Debug, PartialEq, PartialOrd)]
+#[derive(Debug, PartialEq, PartialOrd, Clone)]
 pub struct Material {
     pub color: Color,
     pub ambient: Float,

@@ -3,12 +3,12 @@ use core::panic;
 use crate::{
     material::Material,
     matrix::Matrix,
-    ray::{Intersectable, Intersection, Ray},
+    ray::Ray,
     tuple::{Point, Tuple, Vector},
-    util::Float,
+    util::Float, intersectable::Intersectable, intersection::Intersection,
 };
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Sphere {
     pub origin: Tuple,
     pub radius: Float,
@@ -108,6 +108,9 @@ impl Intersectable for Sphere {
         world_normal.normalize().unwrap()
     }
 
+    fn mut_material(&mut self) -> &mut Material {
+        &mut self.material
+    }
     fn material(&self) -> &Material {
         &self.material
     }

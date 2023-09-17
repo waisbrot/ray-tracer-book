@@ -23,7 +23,7 @@ impl std::fmt::Display for MatrixParseError {
 }
 
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Matrix {
     n: Array2D<Float>,
 }

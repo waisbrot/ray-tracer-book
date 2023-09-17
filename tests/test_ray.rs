@@ -1,5 +1,5 @@
 
-use book_renderer::{tuple::Tuple, ray::{Ray, Intersectable, Intersection}, sphere::Sphere, matrix::Matrix};
+use book_renderer::{tuple::Tuple, ray::Ray, sphere::Sphere, matrix::Matrix, intersectable::Intersectable, intersection::Intersection};
 
 #[test]
 fn test_book_new_ray() {
@@ -144,4 +144,30 @@ fn test_book_ray_scaling() {
     let r2 = transform * r;
     assert_eq!(r2.origin, Tuple::new_point(2.0, 6.0, 12.0));
     assert_eq!(r2.direction, Tuple::new_vector(0.0, 3.0, 0.0));
+}
+
+#[test]
+fn test_book_intersection_precompute() {
+    let r = Ray::new(Tuple::new_point(0.0, 0.0, -5.0), Tuple::new_vector(0.0, 0.0, 1.0));
+    let shape = Sphere::new_unit();
+    let i = Intersection{ t: 4.0, object: &shape };
+    let comps = i.precompute(&r);
+    assert_eq!(comps.object, &shape);
+    assert_eq!(comps.point, Tuple::new_point(0.0, 0.0, -1.0));
+    assert_eq!(comps.eyev, Tuple::new_vector(0.0, 0.0, -1.0));
+    assert_eq!(comps.normalv, Tuple::new_vector(0.0, 0.0, -1.0));
+    assert_eq!(comps.inside, false);
+}
+
+#[test]
+fn test_book_intersection_precompute_inside() {
+    let r = Ray::new(Tuple::new_point(0.0, 0.0, 0.0), Tuple::new_vector(0.0, 0.0, 1.0));
+    let shape = Sphere::new_unit();
+    let i = Intersection{ t: 1.0, object: &shape };
+    let comps = i.precompute(&r);
+    assert_eq!(comps.object, &shape);
+    assert_eq!(comps.point, Tuple::new_point(0.0, 0.0, 1.0));
+    assert_eq!(comps.eyev, Tuple::new_vector(0.0, 0.0, -1.0));
+    assert_eq!(comps.normalv, Tuple::new_vector(0.0, 0.0, -1.0));
+    assert_eq!(comps.inside, true);
 }

@@ -1,4 +1,4 @@
-use book_renderer::util::{feq, Float};
+use book_renderer::util::feq;
 
 #[test]
 fn test_feq() {

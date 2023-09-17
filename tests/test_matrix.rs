@@ -1,6 +1,6 @@
 use std::error::Error;
 use proptest::{prelude::*, num::f64::{POSITIVE, NEGATIVE,NORMAL}};
-use book_renderer::{matrix::Matrix, tuple::Tuple};
+use book_renderer::{matrix::Matrix, tuple::Tuple, util::feq};
 
 #[test]
 fn test_book_from_str_matrix_4_4() -> Result<(), Box<dyn Error>> {
@@ -380,6 +380,16 @@ prop_compose! {
         m
     }
 }
+fn precision_f64(x: f64, decimals: u32) -> f64 { // https://stackoverflow.com/a/76572321/1220269
+    if x == 0. || decimals == 0 {
+      0.
+    } else {
+      let shift = decimals as i32 - x.abs().log10().ceil() as i32;
+      let shift_factor = 10_f64.powi(shift);
+  
+      (x * shift_factor).round() / shift_factor
+    }
+}
 prop_compose! {
     fn finite_matrix_strategy(n: usize)(values in [[NORMAL|POSITIVE|NEGATIVE;4];4]) -> Matrix {
         if n > 4 {
@@ -388,7 +398,7 @@ prop_compose! {
         let mut m = Matrix::new(n, n);
         for r in 0..n {
             for c in 0..n {
-                m[(r,c)] = values[r][c].clamp(-1e5, 1e5);
+                m[(r,c)] = precision_f64(values[r][c].clamp(-1e20, 1e20), 10);
             }
         }
         m
@@ -422,6 +432,11 @@ proptest! {
         let inv = b.inverse()?;
         let d = &c * &inv;
         prop_assume!(!d.contains_nan());
-        prop_assert_eq!(d, a, "c={:?} inv={:?}", c, inv);
+        prop_assert_eq!(&d, &a, "[0,0]={}, [0,1]={}, [1,0]={}, [1,1]={}, c={:?} inv={:?}", 
+            feq(&d[(0,0)], &a[(0,0)]), 
+            feq(&d[(0,1)], &a[(0,1)]),
+            feq(&d[(1,0)], &a[(1,0)]),
+            feq(&d[(1,1)], &a[(1,1)]),
+            c, inv);
     }
 }

@@ -1,4 +1,4 @@
-use book_renderer::{tuple::Point, canvas::Canvas, sphere::Sphere, matrix::Matrix, ray::{Ray,Intersectable, Intersection}, color::{Color, BLACK}};
+use book_renderer::{tuple::Point, canvas::Canvas, sphere::Sphere, matrix::Matrix, ray::Ray, color::{Color, BLACK}, intersectable::Intersectable, intersection::Intersection};
 use clap::Parser;
 
 #[derive(Debug, Parser)]

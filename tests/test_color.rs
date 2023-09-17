@@ -1,4 +1,3 @@
-use std::error::Error;
 use book_renderer::color::*;
 use proptest::prelude::*;
 

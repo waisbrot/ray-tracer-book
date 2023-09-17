@@ -1,6 +1,6 @@
 use std::{error::Error, f64::consts::PI};
 
-use book_renderer::{sphere::Sphere, matrix::Matrix, ray::{Ray, Intersectable}, tuple::Tuple, util::Float, material::Material};
+use book_renderer::{sphere::Sphere, matrix::Matrix, ray::Ray, tuple::Tuple, util::Float, material::Material, intersectable::Intersectable};
 
 #[test]
 fn test_book_sphere_default_transform() {

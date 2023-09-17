@@ -440,3 +440,52 @@ proptest! {
             c, inv);
     }
 }
+
+// pg 98
+#[test]
+fn test_book_default_view_transform() -> Result<(), Box<dyn Error>> {
+    let from = Tuple::new_point(0.0, 0.0, 0.0);
+    let to = Tuple::new_point(0.0, 0.0, -1.0);
+    let up = Tuple::new_vector(0.0, 1.0, 0.0);
+    let t = Matrix::view_transform(&from, &to, &up)?;
+    assert_eq!(t, Matrix::identity(4));
+    Ok(())
+}
+
+// pg 98
+#[test]
+fn test_book_view_transform_positive_z() -> Result<(), Box<dyn Error>> {
+    let from = Tuple::new_point(0.0, 0.0, 0.0);
+    let to = Tuple::new_point(0.0, 0.0, 1.0);
+    let up = Tuple::new_vector(0.0, 1.0, 0.0);
+    let t = Matrix::view_transform(&from, &to, &up)?;
+    assert_eq!(t, Matrix::scaling(-1.0, 1.0, -1.0));
+    Ok(())
+}
+
+// page 99
+#[test]
+fn test_book_view_transform_world() -> Result<(), Box<dyn Error>> {
+    let from = Tuple::new_point(0.0, 0.0, 8.0);
+    let to = Tuple::new_point(0.0, 0.0, 0.0);
+    let up = Tuple::new_vector(0.0, 1.0, 0.0);
+    let t = Matrix::view_transform(&from, &to, &up)?;
+    assert_eq!(t, Matrix::translation(0.0, 0.0, -8.0));
+    Ok(())
+} 
+
+// page 99
+#[test]
+fn test_book_view_transform_multiple() -> Result<(), Box<dyn Error>> {
+    let from = Tuple::new_point(1.0, 3.0, 2.0);
+    let to = Tuple::new_point(4.0, -2.0, 8.0);
+    let up = Tuple::new_vector(1.0, 1.0, 0.0);
+    let t = Matrix::view_transform(&from, &to, &up)?;
+    assert_eq!(t, Matrix::from_str(4, 4, "
+    -0.50709 | 0.50709 |  0.67612 | -2.36643
+     0.76772 | 0.60609 |  0.12122 | -2.82843
+    -0.35857 | 0.59761 | -0.71714 |  0.00000
+     0.00000 | 0.00000 |  0.00000 |  1.00000
+    ")?);
+    Ok(())
+} 

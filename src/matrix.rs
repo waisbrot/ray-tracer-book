@@ -2,7 +2,7 @@ use std::{ops::{IndexMut, Index}, error::Error, num::ParseFloatError};
 use auto_ops::impl_op_ex;
 use regex::Regex;
 use array2d::Array2D;
-use crate::{tuple::Tuple, util::{feq, Float}};
+use crate::{tuple::{Tuple, Point, Vector}, util::{feq, Float}};
 
 #[derive(Debug)]
 pub struct NotInvertibleError {}
@@ -98,6 +98,24 @@ impl Matrix {
         m
     }
 
+    // page 100
+    // In book: view_transform(from, to, up)
+    pub fn view_transform(from: &Point, to: &Point, up: &Vector) -> Result<Self,Box<dyn Error>> {
+        let forward = (to - from).normalize()?;
+        let left = forward.cross(&up.normalize()?)?;
+        let up = left.cross(&forward)?;
+        let mut orientation = Matrix::identity(4);
+        orientation[(0,0)] = left.x;
+        orientation[(0,1)] = left.y;
+        orientation[(0,2)] = left.z;
+        orientation[(1,0)] = up.x;
+        orientation[(1,1)] = up.y;
+        orientation[(1,2)] = up.z;
+        orientation[(2,0)] = -forward.x;
+        orientation[(2,1)] = -forward.y;
+        orientation[(2,2)] = -forward.z;
+        Ok(orientation * Self::translation(-from.x, -from.y, -from.z))
+    }
 
     pub fn is_square(&self) -> bool {
         self.height() == self.width()

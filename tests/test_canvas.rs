@@ -1,5 +1,3 @@
-use std::error::Error;
-
 use book_renderer::canvas::*;
 use book_renderer::color::*;
 

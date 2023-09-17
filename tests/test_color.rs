@@ -1,5 +1,4 @@
 use book_renderer::color::*;
-use proptest::prelude::*;
 
 #[test]
 fn test_book_color_new() {
